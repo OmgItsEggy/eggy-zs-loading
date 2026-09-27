@@ -27,10 +27,18 @@
   </style>
 </head>
 <body>
-  <img id="joinscreen" src="egg_zs_loading_pack/joinscreen.png" alt="">
+  <img id="joinscreen" alt="">
   <audio id="music" src="omfg_hello.mp3" preload="auto" loop></audio>
 
   <script>
+    const splashImages = [
+      "egg_zs_loading_pack/splash_darkrp.png",
+      "egg_zs_loading_pack/splash_cod.png"
+    ];
+
+    const splash = splashImages[Math.floor(Math.random() * splashImages.length)];
+    document.getElementById("joinscreen").src = splash;
+
     const music = document.getElementById("music");
 
     function startMusic(volume) {
