@@ -13,7 +13,8 @@
       background: #000;
     }
 
-    #joinscreen {
+    #joinscreen,
+    #rarevideo {
       position: fixed;
       inset: 0;
       width: 100%;
@@ -21,16 +22,35 @@
       object-fit: contain;
       object-position: center;
       background: #000;
+    }
+
+    #joinscreen {
       user-select: none;
       -webkit-user-drag: none;
+    }
+
+    #rarevideo {
+      display: none;
     }
   </style>
 </head>
 <body>
   <img id="joinscreen" alt="">
+  <video id="rarevideo" src="rare_video1.mp4" preload="auto" playsinline></video>
   <audio id="music" preload="auto"></audio>
 
   <script>
+    ------------------------------------------------------------
+    -- TEST SETTING
+    --
+    -- 0.99 = 99% chance of the rare video.
+    -- After testing, change this to 0.05 for 5%.
+    ------------------------------------------------------------
+  </script>
+
+  <script>
+    const rareVideoChance = 0.99;
+
     const splashImages = [
       "egg_zs_loading_pack/splash_darkrp.png",
       "egg_zs_loading_pack/splash_cod.png"
@@ -44,16 +64,37 @@
       "OMFG_Yeah.mp3"
     ];
 
-    const splash =
-      splashImages[
-        Math.floor(Math.random() * splashImages.length)
-      ];
-
-    document.getElementById("joinscreen").src = splash;
-
+    const joinscreen = document.getElementById("joinscreen");
+    const rareVideo = document.getElementById("rarevideo");
     const music = document.getElementById("music");
 
+    let mode =
+      Math.random() < rareVideoChance
+        ? "rare"
+        : "normal";
+
     let currentTrack = -1;
+    let currentVolume = 0.5;
+    let rareVideoStarted = false;
+
+
+    ------------------------------------------------------------
+    -- NORMAL SPLASH
+    ------------------------------------------------------------
+
+    function chooseSplash() {
+      const splash =
+        splashImages[
+          Math.floor(Math.random() * splashImages.length)
+        ];
+
+      joinscreen.src = splash;
+    }
+
+
+    ------------------------------------------------------------
+    -- MUSIC
+    ------------------------------------------------------------
 
     function chooseNextTrack() {
       if (musicTracks.length === 0) {
@@ -77,14 +118,21 @@
       music.load();
     }
 
-    function startMusic(volume) {
+
+    function setVolume(volume) {
       const v = Number(volume);
 
-      music.volume =
+      currentVolume =
         Number.isFinite(v)
           ? Math.max(0, Math.min(1, v))
           : 0.5;
 
+      music.volume = currentVolume;
+      rareVideo.volume = currentVolume;
+    }
+
+
+    function startMusic() {
       if (currentTrack === -1) {
         chooseNextTrack();
       }
@@ -92,10 +140,87 @@
       music.play().catch(function () {});
     }
 
+
     music.addEventListener("ended", function () {
       chooseNextTrack();
       music.play().catch(function () {});
     });
+
+
+    ------------------------------------------------------------
+    -- NORMAL LOADING SCREEN
+    ------------------------------------------------------------
+
+    function startNormalLoadingScreen() {
+      mode = "normal";
+
+      rareVideo.pause();
+      rareVideo.style.display = "none";
+
+      joinscreen.style.display = "block";
+
+      if (!joinscreen.src) {
+        chooseSplash();
+      }
+
+      startMusic();
+    }
+
+
+    ------------------------------------------------------------
+    -- RARE VIDEO
+    ------------------------------------------------------------
+
+    function startRareVideo() {
+      if (mode !== "rare") {
+        return;
+      }
+
+      music.pause();
+      joinscreen.style.display = "none";
+      rareVideo.style.display = "block";
+
+      setVolume(currentVolume);
+
+      if (!rareVideoStarted) {
+        rareVideoStarted = true;
+        rareVideo.currentTime = 0;
+      }
+
+      rareVideo.play().catch(function () {
+        startNormalLoadingScreen();
+      });
+    }
+
+
+    rareVideo.addEventListener("ended", function () {
+      startNormalLoadingScreen();
+    });
+
+
+    rareVideo.addEventListener("error", function () {
+      startNormalLoadingScreen();
+    });
+
+
+    ------------------------------------------------------------
+    -- START SELECTED MODE
+    ------------------------------------------------------------
+
+    function startSelectedMode(volume) {
+      setVolume(volume);
+
+      if (mode === "rare") {
+        startRareVideo();
+      } else {
+        startNormalLoadingScreen();
+      }
+    }
+
+
+    ------------------------------------------------------------
+    -- GMOD LOADING SCREEN CALLBACK
+    ------------------------------------------------------------
 
     function GameDetails(
       serverName,
@@ -107,11 +232,16 @@
       volume,
       language
     ) {
-      startMusic(volume);
+      startSelectedMode(volume);
     }
 
+
+    ------------------------------------------------------------
+    -- FALLBACK START
+    ------------------------------------------------------------
+
     window.addEventListener("load", function () {
-      startMusic(0.5);
+      startSelectedMode(0.5);
     });
   </script>
 </body>
