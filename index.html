@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title></title>
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+
+    #joinscreen {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      background: #000;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+  </style>
+</head>
+<body>
+  <img id="joinscreen" src="egg_zs_loading_pack/joinscreen.png" alt="">
+  <audio id="music" src="omfg_hello.mp3" preload="auto" loop></audio>
+
+  <script>
+    const music = document.getElementById("music");
+
+    function startMusic(volume) {
+      const v = Number(volume);
+      music.volume = Number.isFinite(v) ? Math.max(0, Math.min(1, v)) : 0.5;
+      music.play().catch(function () {});
+    }
+
+    function GameDetails(serverName, serverURL, mapName, maxPlayers, steamID, gamemode, volume, language) {
+      startMusic(volume);
+    }
+
+    window.addEventListener("load", function () {
+      startMusic(0.5);
+    });
+  </script>
+</body>
+</html>
