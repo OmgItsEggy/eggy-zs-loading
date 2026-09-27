@@ -28,7 +28,7 @@
 </head>
 <body>
   <img id="joinscreen" alt="">
-  <audio id="music" src="omfg_hello.mp3" preload="auto" loop></audio>
+  <audio id="music" preload="auto"></audio>
 
   <script>
     const splashImages = [
@@ -36,18 +36,77 @@
       "egg_zs_loading_pack/splash_cod.png"
     ];
 
-    const splash = splashImages[Math.floor(Math.random() * splashImages.length)];
+    const musicTracks = [
+      "omfg_hello.mp3",
+      "OMFG_Everybody.mp3",
+      "OMFG_IceCream.mp3",
+      "OMFG_Ok.mp3",
+      "OMFG_Yeah.mp3"
+    ];
+
+    const splash =
+      splashImages[
+        Math.floor(Math.random() * splashImages.length)
+      ];
+
     document.getElementById("joinscreen").src = splash;
 
     const music = document.getElementById("music");
 
+    let currentTrack = -1;
+
+    function chooseNextTrack() {
+      if (musicTracks.length === 0) {
+        return;
+      }
+
+      if (musicTracks.length === 1) {
+        currentTrack = 0;
+      } else {
+        let nextTrack;
+
+        do {
+          nextTrack =
+            Math.floor(Math.random() * musicTracks.length);
+        } while (nextTrack === currentTrack);
+
+        currentTrack = nextTrack;
+      }
+
+      music.src = musicTracks[currentTrack];
+      music.load();
+    }
+
     function startMusic(volume) {
       const v = Number(volume);
-      music.volume = Number.isFinite(v) ? Math.max(0, Math.min(1, v)) : 0.5;
+
+      music.volume =
+        Number.isFinite(v)
+          ? Math.max(0, Math.min(1, v))
+          : 0.5;
+
+      if (currentTrack === -1) {
+        chooseNextTrack();
+      }
+
       music.play().catch(function () {});
     }
 
-    function GameDetails(serverName, serverURL, mapName, maxPlayers, steamID, gamemode, volume, language) {
+    music.addEventListener("ended", function () {
+      chooseNextTrack();
+      music.play().catch(function () {});
+    });
+
+    function GameDetails(
+      serverName,
+      serverURL,
+      mapName,
+      maxPlayers,
+      steamID,
+      gamemode,
+      volume,
+      language
+    ) {
       startMusic(volume);
     }
 
