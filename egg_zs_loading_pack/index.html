@@ -27,23 +27,31 @@
   </style>
 </head>
 <body>
-  <img id="joinscreen" src="joinscreen.png" alt="">
-  <audio id="music" src="omfg_hello.mp3" preload="auto" loop></audio>
+  <img id="joinscreen" alt="">
+  <audio id="music" src="../omfg_hello.mp3" preload="auto" loop></audio>
 
   <script>
-    const music = document.getElementById('music');
+    const splashImages = [
+      "splash_darkrp.png",
+      "splash_cod.png"
+    ];
+
+    const splash = splashImages[Math.floor(Math.random() * splashImages.length)];
+    document.getElementById("joinscreen").src = splash;
+
+    const music = document.getElementById("music");
 
     function startMusic(volume) {
       const v = Number(volume);
       music.volume = Number.isFinite(v) ? Math.max(0, Math.min(1, v)) : 0.5;
-      music.play().catch(() => {});
+      music.play().catch(function () {});
     }
 
     function GameDetails(serverName, serverURL, mapName, maxPlayers, steamID, gamemode, volume, language) {
       startMusic(volume);
     }
 
-    window.addEventListener('load', () => {
+    window.addEventListener("load", function () {
       startMusic(0.5);
     });
   </script>
