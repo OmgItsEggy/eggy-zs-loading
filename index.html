@@ -40,15 +40,9 @@
   <audio id="music" preload="auto"></audio>
 
   <script>
-    ------------------------------------------------------------
-    -- TEST SETTING
-    --
-    -- 0.99 = 99% chance of the rare video.
-    -- After testing, change this to 0.05 for 5%.
-    ------------------------------------------------------------
-  </script>
-
-  <script>
+    // TEST SETTING
+    // 0.99 = 99% chance of the rare video.
+    // After testing, change this to 0.05 for 5%.
     const rareVideoChance = 0.99;
 
     const splashImages = [
@@ -77,11 +71,7 @@
     let currentVolume = 0.5;
     let rareVideoStarted = false;
 
-
-    ------------------------------------------------------------
-    -- NORMAL SPLASH
-    ------------------------------------------------------------
-
+    // NORMAL SPLASH
     function chooseSplash() {
       const splash =
         splashImages[
@@ -91,11 +81,7 @@
       joinscreen.src = splash;
     }
 
-
-    ------------------------------------------------------------
-    -- MUSIC
-    ------------------------------------------------------------
-
+    // MUSIC
     function chooseNextTrack() {
       if (musicTracks.length === 0) {
         return;
@@ -118,7 +104,6 @@
       music.load();
     }
 
-
     function setVolume(volume) {
       const v = Number(volume);
 
@@ -131,7 +116,6 @@
       rareVideo.volume = currentVolume;
     }
 
-
     function startMusic() {
       if (currentTrack === -1) {
         chooseNextTrack();
@@ -140,17 +124,12 @@
       music.play().catch(function () {});
     }
 
-
     music.addEventListener("ended", function () {
       chooseNextTrack();
       music.play().catch(function () {});
     });
 
-
-    ------------------------------------------------------------
-    -- NORMAL LOADING SCREEN
-    ------------------------------------------------------------
-
+    // NORMAL LOADING SCREEN
     function startNormalLoadingScreen() {
       mode = "normal";
 
@@ -166,11 +145,7 @@
       startMusic();
     }
 
-
-    ------------------------------------------------------------
-    -- RARE VIDEO
-    ------------------------------------------------------------
-
+    // RARE VIDEO
     function startRareVideo() {
       if (mode !== "rare") {
         return;
@@ -192,21 +167,15 @@
       });
     }
 
-
     rareVideo.addEventListener("ended", function () {
       startNormalLoadingScreen();
     });
-
 
     rareVideo.addEventListener("error", function () {
       startNormalLoadingScreen();
     });
 
-
-    ------------------------------------------------------------
-    -- START SELECTED MODE
-    ------------------------------------------------------------
-
+    // START SELECTED MODE
     function startSelectedMode(volume) {
       setVolume(volume);
 
@@ -217,11 +186,7 @@
       }
     }
 
-
-    ------------------------------------------------------------
-    -- GMOD LOADING SCREEN CALLBACK
-    ------------------------------------------------------------
-
+    // GMOD LOADING SCREEN CALLBACK
     function GameDetails(
       serverName,
       serverURL,
@@ -235,11 +200,7 @@
       startSelectedMode(volume);
     }
 
-
-    ------------------------------------------------------------
-    -- FALLBACK START
-    ------------------------------------------------------------
-
+    // FALLBACK START
     window.addEventListener("load", function () {
       startSelectedMode(0.5);
     });
