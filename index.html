@@ -36,7 +36,7 @@
 </head>
 <body>
   <img id="joinscreen" alt="">
-  <video id="rarevideo" src="rare_video1.mp4" preload="auto" playsinline></video>
+  <video id="rarevideo" src="rare_video1_gmod.webm" preload="auto" playsinline></video>
   <audio id="music" preload="auto"></audio>
 
   <script>
@@ -71,7 +71,6 @@
     let currentVolume = 0.5;
     let rareVideoStarted = false;
 
-    // NORMAL SPLASH
     function chooseSplash() {
       const splash =
         splashImages[
@@ -81,7 +80,6 @@
       joinscreen.src = splash;
     }
 
-    // MUSIC
     function chooseNextTrack() {
       if (musicTracks.length === 0) {
         return;
@@ -129,7 +127,6 @@
       music.play().catch(function () {});
     });
 
-    // NORMAL LOADING SCREEN
     function startNormalLoadingScreen() {
       mode = "normal";
 
@@ -145,7 +142,6 @@
       startMusic();
     }
 
-    // RARE VIDEO
     function startRareVideo() {
       if (mode !== "rare") {
         return;
@@ -175,7 +171,6 @@
       startNormalLoadingScreen();
     });
 
-    // START SELECTED MODE
     function startSelectedMode(volume) {
       setVolume(volume);
 
@@ -186,7 +181,6 @@
       }
     }
 
-    // GMOD LOADING SCREEN CALLBACK
     function GameDetails(
       serverName,
       serverURL,
@@ -200,7 +194,6 @@
       startSelectedMode(volume);
     }
 
-    // FALLBACK START
     window.addEventListener("load", function () {
       startSelectedMode(0.5);
     });
