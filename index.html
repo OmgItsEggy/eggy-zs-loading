@@ -36,14 +36,20 @@
 </head>
 <body>
   <img id="joinscreen" alt="">
-  <video id="rarevideo" src="rare_video1_gmod.webm" preload="auto" playsinline></video>
+  <video id="rarevideo" preload="auto" playsinline></video>
   <audio id="music" preload="auto"></audio>
 
   <script>
-    // TEST SETTING
-    // 0.99 = 99% chance of the rare video.
-    // After testing, change this to 0.05 for 5%.
-    const rareVideoChance = 0.05;
+    // Each rare video has its own 5% chance.
+    // Video 1: 5%
+    // Video 2: 5%
+    // Normal splash + music: 90%
+    const rareVideoChanceEach = 0.05;
+
+    const rareVideos = [
+      "rare_video1_gmod.webm",
+      "rare_video2_gmod.webm"
+    ];
 
     const splashImages = [
       "egg_zs_loading_pack/splash_darkrp.png",
@@ -62,10 +68,18 @@
     const rareVideo = document.getElementById("rarevideo");
     const music = document.getElementById("music");
 
-    let mode =
-      Math.random() < rareVideoChance
-        ? "rare"
-        : "normal";
+    const rareRoll = Math.random();
+
+    let mode = "normal";
+    let selectedRareVideo = null;
+
+    if (rareRoll < rareVideoChanceEach) {
+      mode = "rare";
+      selectedRareVideo = rareVideos[0];
+    } else if (rareRoll < rareVideoChanceEach * 2) {
+      mode = "rare";
+      selectedRareVideo = rareVideos[1];
+    }
 
     let currentTrack = -1;
     let currentVolume = 0.5;
@@ -143,7 +157,8 @@
     }
 
     function startRareVideo() {
-      if (mode !== "rare") {
+      if (mode !== "rare" || !selectedRareVideo) {
+        startNormalLoadingScreen();
         return;
       }
 
@@ -155,6 +170,8 @@
 
       if (!rareVideoStarted) {
         rareVideoStarted = true;
+        rareVideo.src = selectedRareVideo;
+        rareVideo.load();
         rareVideo.currentTime = 0;
       }
 
